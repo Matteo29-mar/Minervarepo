@@ -1,7 +1,7 @@
-# Repository Gruppo progetto Minerva Express
+# Repository Gruppo progetto Minerva Books
 
 ## Finalità del progetto
-Prestiti bibloteca
+Sviluppare un servizio di prestiti bibloteca, per il prestito di libri.
 
 ## Tecnologie utilizzate:
 - Ambiente di sviluppo utilizzato: Intellij IDEA
