@@ -11,7 +11,7 @@ Sviluppare un servizio di prestiti bibloteca, per il prestito di libri.
 
 
 ## Utenti all'interno del progetto:
--Matteo Marziano\n
+-Matteo Marziano
 -Simone Oliva
 -Paolo Carena
 -Elisa Cat-Genova
