@@ -1,6 +1,6 @@
 package com.minerva.books.entities;
 
-import com.minerva.books.utils.BookStatus;
+import java.lang.String;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -17,7 +17,7 @@ public class Book {
     private int anno;
     private String genere;
     private int n_pagine;
-    private BookStatus stato;
+    private String stato;
     private String editore;
 
     public Book() {
@@ -71,11 +71,11 @@ public class Book {
         this.n_pagine = n_pagine;
     }
 
-    public BookStatus getStato() {
+    public String getStato() {
         return stato;
     }
 
-    public void setStato(BookStatus stato) {
+    public void setStato(String stato) {
         this.stato = stato;
     }
 

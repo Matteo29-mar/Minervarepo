@@ -11,5 +11,7 @@ spring:
     password: minervabooks@admin#
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: update
   banner:
     location: static/banner/minervabooks.txt
