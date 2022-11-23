@@ -1,6 +1,7 @@
 package com.minerva.books.services;
 
 import com.minerva.books.Exceptions.BookNotFoundException;
+import com.minerva.books.Exceptions.InternalErrorException;
 import com.minerva.books.entities.Book;
 import com.minerva.books.repo.BooksRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class BookServiceImpl implements BooksService{
     public List<Book> getByISBN(String ISBN) {
 
         if (ISBN != null) {
-            List<Book> books = repo.findByISBN(ISBN);
+            List<Book> books = repo.findBooksByISBN(ISBN);
             if (!books.isEmpty()){
                 return books;
             }else {
@@ -77,7 +78,8 @@ public class BookServiceImpl implements BooksService{
         if (id != null){
             repo.deleteById(id);
             return repo.findById(id).isEmpty();
+        }else {
+            throw new InternalErrorException("deleting a book");
         }
-        return false;
     }
 }

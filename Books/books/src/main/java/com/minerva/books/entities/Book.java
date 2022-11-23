@@ -1,8 +1,11 @@
 package com.minerva.books.entities;
 
+import com.sun.istack.NotNull;
+
 import java.lang.String;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -11,14 +14,24 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String ISBN;
+    @NotNull
     private String titolo;
+    @NotNull
     private String autore;
+    @NotNull
     private int anno;
+    @NotNull
     private String genere;
+    @NotNull
     private int n_pagine;
+    @NotNull
     private String stato;
+    @NotNull
     private String editore;
+    @NotNull
+    private LocalDate data_inizio;
 
     public Book() {
     }
@@ -93,6 +106,14 @@ public class Book {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDate getData_inizio() {
+        return data_inizio;
+    }
+
+    public void setData_inizio(LocalDate data_inizio) {
+        this.data_inizio = data_inizio;
     }
 
     @Override

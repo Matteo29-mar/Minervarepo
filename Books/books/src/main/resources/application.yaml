@@ -1,9 +1,11 @@
 application:
   title: Books Service
   version: 0.1
-spring:
-  server:
+server:
     port: 9001
+    error:
+      include-stacktrace: never
+spring:
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/minervabooks
@@ -15,3 +17,11 @@ spring:
       ddl-auto: update
   banner:
     location: static/banner/minervabooks.txt
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - prometheus
