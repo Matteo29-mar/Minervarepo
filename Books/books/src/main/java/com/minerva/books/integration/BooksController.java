@@ -1,12 +1,10 @@
 package com.minerva.books.integration;
 
-import com.minerva.books.Exceptions.BadRequestException;
-import com.minerva.books.Exceptions.BookNotFoundException;
-import com.minerva.books.Exceptions.InternalErrorException;
 import com.minerva.books.entities.Book;
 import com.minerva.books.services.BooksService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -39,21 +37,20 @@ public class BooksController {
     @GetMapping("books/{id}")
     public Book getBook(@PathVariable Long id) {
         if (id == null) // throw badRequest if book isbn is null
-            throw new BadRequestException();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id cannot be null");
         Book found = service.getById(id);
         if (found == null) // throw notFound if requested book doesn't exist
-            throw new BookNotFoundException(id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with id: " + id);
         return found;
     }
 
     @GetMapping("books/isbn")
     public Long getBookByISBN(@Valid @RequestParam String code) {
         if (code == null) // throw badRequest if book isbn is null
-            throw new BadRequestException();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         List<Book> books = service.getByISBN(code);
-        books.forEach(System.out::println);
         if ( books == null) // throw notFound if request isbn is not present in db
-            throw new BookNotFoundException(code);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with ISBN: " +  code);
         books.forEach((book) -> { // check whole list to update status of books with requested isbn
             // checks if a month has passed since the previous borrowing of the book and the state isn't "libero"
             if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && !Objects.equals(book.getStato(), "libero")) {
@@ -76,6 +73,8 @@ public class BooksController {
         });
         Long bookId = idFound;
         idFound = 0L; // resets idFound fo future requests
+        if (bookId == 0L)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no available books with ISBN: " + code);
         return bookId; // returns first available book's id to endpoint response
     }
 
@@ -83,10 +82,10 @@ public class BooksController {
     @ResponseStatus(HttpStatus.CREATED)
     public Book addBook(@Valid @RequestBody Book newBook) {
         if (newBook == null) // throw badRequest if body doesn't contain a Book Obj
-                throw new BadRequestException();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         Book book = service.addBook(newBook);
         if (book == null) // throws internalError if book was not added
-            throw new InternalErrorException("adding a new book");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not create requested book");
         return book;
     }
 
@@ -94,14 +93,14 @@ public class BooksController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Book updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
         if (id == null)  // throw badRequest if book id is null
-            throw new BadRequestException();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         Book oldBook = service.getById(id);
         if (oldBook != null) {
             updatedBook.setId(oldBook.getId());
             service.updateBook(updatedBook);
             return updatedBook;
         } else { // throws notFound if the book to update does not exist
-            throw new BookNotFoundException(id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with id: " + id);
         }
     }
 
@@ -109,7 +108,7 @@ public class BooksController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public String deleteBookById(@PathVariable Long id) {
         if (id == null) // throw badRequest if book id is null
-            throw new BadRequestException();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         return service.deleteBookById(id) ? "Book with id " + id + " was deleted successfully" : "Book with id" + id + " was not deleted";
     }
 

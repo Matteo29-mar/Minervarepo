@@ -79,10 +79,7 @@ class BooksControllerTest {
 
     @Test
     void getBookById_error_bookNotFound() throws Exception{
-        given(controller.getBook(6L)).willReturn(null);
-        mvc.perform(get(new URI("/api/v1/books/"+ 6L))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        mvc.perform(get("/api/v1/books/26")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -108,10 +105,7 @@ class BooksControllerTest {
     @Test
     void getBookByISBN_error_bookNotFound() throws Exception{
         given(controller.getBookByISBN(book_4.getISBN()+10L)).willReturn(null);
-        mvc.perform(get(new URI("/api/v1/books/isbn"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("code", book_4.getISBN()+10L))
-                .andExpect(status().isBadRequest());
+        mvc.perform(get(new URI("/api/v1/books/isbn"))).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -170,10 +164,10 @@ class BooksControllerTest {
     void updateBook_error_bookNotFound() throws Exception{
         book_1_updated.setId(book_1.getId());
         given(controller.updateBook(15L, book_1_updated)).willReturn(null);
-        mvc.perform(MockMvcRequestBuilders.put(new URI("/api/v1/books/" + 15L))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(book_1_updated_json))
-                .andExpect(status().isNotFound());
+        mvc.perform(MockMvcRequestBuilders.put("/api/v1/books/15" )
+                .accept(MediaType.APPLICATION_JSON)
+                .content(book_1_updated_json)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test

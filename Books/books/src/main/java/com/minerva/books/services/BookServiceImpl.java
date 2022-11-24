@@ -1,10 +1,11 @@
 package com.minerva.books.services;
 
-import com.minerva.books.Exceptions.BookNotFoundException;
 import com.minerva.books.entities.Book;
 import com.minerva.books.repo.BooksRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BooksService {
 
-    private final List<Book> empty = new ArrayList<Book>();
+    private final List<Book> empty = new ArrayList<>();
     private final BooksRepo repo;
 
     @Autowired
@@ -23,7 +24,7 @@ public class BookServiceImpl implements BooksService {
     @Override
     public Book getById(Long id) {
 
-        return repo.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with id: " + id));
 
     }
 
@@ -42,10 +43,11 @@ public class BookServiceImpl implements BooksService {
     public List<Book> getByISBN(String ISBN) {
 
         List<Book> books = repo.findBooksByISBN(ISBN);
+        System.out.println(books);
         if (!books.isEmpty()) {
             return books;
         } else {
-            throw new BookNotFoundException(ISBN);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with ISBN: " + ISBN);
         }
     }
 
