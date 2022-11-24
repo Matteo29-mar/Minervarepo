@@ -1,39 +1,77 @@
 package com.minerva.books.entities;
 
-import com.sun.istack.NotNull;
-
-import java.lang.String;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name="books")
+@Table(name = "books")
+@ToString
 public class Book {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @Column(nullable = false, length = 13)
+    @NotEmpty
+    @Size(min = 13, max = 13 )
     private String ISBN;
-    @NotNull
+    @Column(nullable = false)
+    @NotEmpty(message = "titolo must not be null")
     private String titolo;
-    @NotNull
+    @Column(nullable = false)
+    @NotEmpty(message = "autore must not be null")
     private String autore;
+    @Column(nullable = false)
     @NotNull
+    @Min(1)
     private int anno;
-    @NotNull
+    @Column(nullable = false)
+    @NotEmpty
     private String genere;
+    @Column(nullable = false)
     @NotNull
+    @Min(1)
     private int n_pagine;
-    @NotNull
+    @Column(nullable = false)
+    @NotEmpty
     private String stato;
-    @NotNull
+    @Column(nullable = false)
+    @NotEmpty
     private String editore;
+    @Column(nullable = false)
     @NotNull
     private LocalDate data_inizio;
 
+    public Book(Long id, String ISBN, String titolo, String autore, int anno, String genere, int n_pagine, String stato, String editore, LocalDate data_inizio) {
+        this.id = id;
+        this.ISBN = ISBN;
+        this.titolo = titolo;
+        this.autore = autore;
+        this.anno = anno;
+        this.genere = genere;
+        this.n_pagine = n_pagine;
+        this.stato = stato;
+        this.editore = editore;
+        this.data_inizio = data_inizio;
+    }
+
     public Book() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getISBN() {
@@ -100,14 +138,6 @@ public class Book {
         this.editore = editore;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public LocalDate getData_inizio() {
         return data_inizio;
     }
@@ -116,30 +146,18 @@ public class Book {
         this.data_inizio = data_inizio;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Book book)) return false;
-        return id == book.id && getAnno() == book.getAnno() && getN_pagine() == book.getN_pagine() && getISBN().equals(book.getISBN()) && getTitolo().equals(book.getTitolo()) && getAutore().equals(book.getAutore()) && getGenere().equals(book.getGenere()) && getStato() == book.getStato() && getEditore().equals(book.getEditore());
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Book book = (Book) o;
+        return id != null && Objects.equals(id, book.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, getISBN(), getTitolo());
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", ISBN='" + ISBN + '\'' +
-                ", titolo='" + titolo + '\'' +
-                ", autore='" + autore + '\'' +
-                ", anno=" + anno +
-                ", genere='" + genere + '\'' +
-                ", n_pagine=" + n_pagine +
-                ", stato=" + stato +
-                ", editore='" + editore + '\'' +
-                '}';
+        return getClass().hashCode();
     }
 }

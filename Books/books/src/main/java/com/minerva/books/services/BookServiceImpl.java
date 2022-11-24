@@ -1,7 +1,6 @@
 package com.minerva.books.services;
 
 import com.minerva.books.Exceptions.BookNotFoundException;
-import com.minerva.books.Exceptions.InternalErrorException;
 import com.minerva.books.entities.Book;
 import com.minerva.books.repo.BooksRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BookServiceImpl implements BooksService{
+public class BookServiceImpl implements BooksService {
 
-    private List<Book> empty = new ArrayList<Book>();
+    private final List<Book> empty = new ArrayList<Book>();
     private final BooksRepo repo;
 
     @Autowired
@@ -23,11 +22,9 @@ public class BookServiceImpl implements BooksService{
 
     @Override
     public Book getById(Long id) {
-        if (id != null ){
-            return repo.findById(id).orElseThrow(() -> new BookNotFoundException(id));
-        }else {
-            return null;
-        }
+
+        return repo.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+
     }
 
     @Override
@@ -35,51 +32,41 @@ public class BookServiceImpl implements BooksService{
 
         List<Book> books = repo.findAll();
 
-        if (books.isEmpty()){
+        if (books.isEmpty()) {
             return empty;
-         }
+        }
         return books;
     }
 
     @Override
     public List<Book> getByISBN(String ISBN) {
 
-        if (ISBN != null) {
-            List<Book> books = repo.findBooksByISBN(ISBN);
-            if (!books.isEmpty()){
-                return books;
-            }else {
-                throw new BookNotFoundException(ISBN);
-            }
+        List<Book> books = repo.findBooksByISBN(ISBN);
+        if (!books.isEmpty()) {
+            return books;
+        } else {
+            throw new BookNotFoundException(ISBN);
         }
-        return null;
     }
 
     @Override
     public Book addBook(Book newBook) {
-
-        if (newBook != null){
-            return repo.save(newBook);
-        }
-        return null;
+        return repo.save(newBook);
     }
+
 
     @Override
     public Book updateBook(Book updatedBook) {
-        if(updatedBook != null){
-            return repo.save(updatedBook);
-        }
-        return null;
+
+        return repo.save(updatedBook);
+
     }
 
     @Override
     public boolean deleteBookById(Long id) {
 
-        if (id != null){
-            repo.deleteById(id);
-            return repo.findById(id).isEmpty();
-        }else {
-            throw new InternalErrorException("deleting a book");
-        }
+        repo.deleteById(id);
+        return repo.findById(id).isEmpty();
+
     }
 }
