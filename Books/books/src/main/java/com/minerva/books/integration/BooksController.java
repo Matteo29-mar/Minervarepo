@@ -5,17 +5,16 @@ import com.minerva.books.Exceptions.BookNotFoundException;
 import com.minerva.books.Exceptions.InternalErrorException;
 import com.minerva.books.entities.Book;
 import com.minerva.books.services.BooksService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/v1")
 public class BooksController {
 
     private final BooksService service;
@@ -32,7 +31,7 @@ public class BooksController {
         this.service = service;
     }
 
-    @GetMapping("books")
+    @GetMapping("/books")
     public List<Book> getAll() {
         return service.getAllBooks();
     }
@@ -57,7 +56,7 @@ public class BooksController {
             throw new BookNotFoundException(code);
         books.forEach((book) -> { // check whole list to update status of books with requested isbn
             // checks if a month has passed since the previous borrowing of the book and the state isn't "libero"
-            if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && book.getStato() != "libero") {
+            if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && !Objects.equals(book.getStato(), "libero")) {
                 if (this.idFound == 0L) { // checks if first available book hasn't already been found
                     this.idFound = book.getId(); // sets idFound with book id
                     book.setData_inizio(LocalDate.now()); // sets borrowing start date to current DateTime
@@ -68,7 +67,7 @@ public class BooksController {
                     service.updateBook(book); // updates book in db
                 }
             // checks if a month has passed since previous borrowing and status == "libero" and first available book hasn't been found yet
-            } else if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && book.getStato() == "libero" && idFound != 0L) {
+            } else if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && Objects.equals(book.getStato(), "libero") && idFound != 0L) {
                 idFound = book.getId(); // sets idFound to book id
                 book.setStato("in_prestito"); // sets book status to "in_prestito"
                 book.setData_inizio(LocalDate.now()); // sets book's borrowing start date to current DateTime
@@ -81,6 +80,7 @@ public class BooksController {
     }
 
     @PostMapping("books")
+    @ResponseStatus(HttpStatus.CREATED)
     public Book addBook(@Valid @RequestBody Book newBook) {
         if (newBook == null) // throw badRequest if body doesn't contain a Book Obj
                 throw new BadRequestException();
@@ -91,6 +91,7 @@ public class BooksController {
     }
 
     @PutMapping("books/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Book updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
         if (id == null)  // throw badRequest if book id is null
             throw new BadRequestException();
@@ -105,10 +106,11 @@ public class BooksController {
     }
 
     @DeleteMapping("books/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String deleteBookById(@PathVariable Long id) {
         if (id == null) // throw badRequest if book id is null
             throw new BadRequestException();
-        return service.deleteBookById(id) ? "Books with id " + id + " was deleted successfully" : "Book with id" + id + " was not deleted";
+        return service.deleteBookById(id) ? "Book with id " + id + " was deleted successfully" : "Book with id" + id + " was not deleted";
     }
 
 }
