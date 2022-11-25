@@ -6,11 +6,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,6 +20,8 @@ import static org.hamcrest.core.Is.is;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -79,7 +82,9 @@ class BooksControllerTest {
 
     @Test
     void getBookById_error_bookNotFound() throws Exception{
-        mvc.perform(get("/api/v1/books/26")).andExpect(status().isNotFound());
+        willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).given(controller).getBook(26L);
+        mvc.perform(get("/api/v1/books/26")
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -102,10 +107,12 @@ class BooksControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void getBookByISBN_error_bookNotFound() throws Exception{
-        given(controller.getBookByISBN(book_4.getISBN()+10L)).willReturn(null);
-        mvc.perform(get(new URI("/api/v1/books/isbn"))).andExpect(status().isBadRequest());
+
+   @Test
+   void getBookByISBN_error_bookNotFound() throws Exception{
+        willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).given(controller).getBookByISBN("9788869059384");
+        mvc.perform(get(new URI("/api/v1/books/isbn"))
+                .param("code","9788869059384")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -125,18 +132,17 @@ class BooksControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
-    /*
+
     @Test
     void addBook_error_bookWasNotAdded() throws Exception{
-        given(controller.addBook(book_1)).willReturn(null);
+        willThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong while " + "adding a new book")).given(controller).addBook(book_1);
         mvc.perform(MockMvcRequestBuilders.post(new URI("/api/v1/books"))
                         .accept(MediaType.APPLICATION_JSON)
                         .content(book_1_json)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$", is("Something went wrong while " + "adding a new book"  )));
+                .andExpect(status().isInternalServerError());
     }
-    */
+
 
     @Test
     void updateBook_success() throws Exception{
@@ -163,7 +169,7 @@ class BooksControllerTest {
     @Test
     void updateBook_error_bookNotFound() throws Exception{
         book_1_updated.setId(book_1.getId());
-        given(controller.updateBook(15L, book_1_updated)).willReturn(null);
+        willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with id: " + 15L)).given(controller).updateBook(15L, book_1_updated);
         mvc.perform(MockMvcRequestBuilders.put("/api/v1/books/15" )
                 .accept(MediaType.APPLICATION_JSON)
                 .content(book_1_updated_json)
