@@ -4,6 +4,7 @@ server:
       include-stacktrace: never
       whitelabel:
         enabled: false
+
 spring:
   application:
     name: Books Service
@@ -21,6 +22,13 @@ spring:
       ddl-auto: update
   banner:
     location: static/banner/minervabooks.txt
+  rabbitmq:
+    host: localhost
+    virtual-host: /
+    port: 5672
+    stream:
+      username: minervabooks
+      password: minervabooks@notify#
   web:
     resources:
       add-mappings: false

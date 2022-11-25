@@ -66,7 +66,8 @@ public class BookServiceImpl implements BooksService {
 
     @Override
     public boolean deleteBookById(Long id) {
-
+        if( !repo.findById(id).isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find book with id: " + id);
         repo.deleteById(id);
         return repo.findById(id).isEmpty();
 

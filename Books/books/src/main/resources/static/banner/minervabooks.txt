@@ -4,7 +4,7 @@
 | |  | | | | | |\  || |___ |  _ <   \ V /   / ___ \
 |_|  |_||___||_| \_||_____||_| \_\   \_/   /_/   \_\
 
-${application.title} v${application.version}
+${spring.application.name} v${spring.application.version}
 Powered by Spring Boot ${spring-boot.version}
 and the Minerva Group:
 - Samime Assia
