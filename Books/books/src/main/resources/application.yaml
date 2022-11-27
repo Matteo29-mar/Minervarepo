@@ -4,6 +4,16 @@ server:
       include-stacktrace: never
       whitelabel:
         enabled: false
+    servlet:
+      context-path: /minerva/books
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /minerva/books/docs/api-docs
+  swagger-ui:
+    path: /minerva/books/docs/swagger-ui.html
+
 
 spring:
   application:
