@@ -16,7 +16,6 @@ public class BookNotificationSender {
 
     public void SendNotification(String message){
         this.template.convertAndSend(queue.getName(), message);
-        System.out.println("Message sent with content: " + message);
     }
 
 
