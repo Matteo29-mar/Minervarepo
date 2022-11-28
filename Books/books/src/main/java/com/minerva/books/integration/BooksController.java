@@ -3,8 +3,8 @@ package com.minerva.books.integration;
 import com.minerva.books.entities.Book;
 import com.minerva.books.services.BookNotificationSender;
 import com.minerva.books.services.BooksService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,11 +26,11 @@ public class BooksController {
     */
     private Long idFound = 0L;
 
-    @Autowired
-    private BookNotificationSender sender;
+    private final BookNotificationSender sender;
 
-    public BooksController(BooksService service) {
+    public BooksController(BooksService service, BookNotificationSender sender) {
         this.service = service;
+        this.sender = sender;
     }
 
     @GetMapping("/books")
@@ -39,17 +39,17 @@ public class BooksController {
     }
 
     @GetMapping("books/{id}")
-    public Book getBook(@PathVariable Long id) {
+    public ResponseEntity<Book> getBook(@PathVariable Long id) {
         if (id == null) // throw badRequest if book isbn is null
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id cannot be null");
         Book found = service.getById(id);
         if (found == null) // throw notFound if requested book doesn't exist
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with id: " + id);
-        return found;
+        return new ResponseEntity<>(found, HttpStatus.OK);
     }
 
     @GetMapping("books/isbn")
-    public Long getBookByISBN(@Valid @RequestParam String code) {
+    public ResponseEntity<Long> getBookByISBN(@Valid @RequestParam String code) {
         idFound = 0L;
         if (code == null) // throw badRequest if book isbn is null
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
@@ -74,30 +74,30 @@ public class BooksController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no available books with ISBN: " + code);
         }
 
-        return idFound; // returns first available book's id to endpoint response
+        return new ResponseEntity<>(idFound, HttpStatus.OK); // returns first available book's id to endpoint response
     }
 
     @PostMapping("books")
     @ResponseStatus(HttpStatus.CREATED)
-    public Book addBook(@Valid @RequestBody Book newBook) {
+    public ResponseEntity<Book> addBook(@Valid @RequestBody Book newBook) {
         if (newBook == null) // throw badRequest if body doesn't contain a Book Obj
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         Book book = service.addBook(newBook);
         if (book == null) // throws internalError if book was not added
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not create requested book");
-        return book;
+        return new ResponseEntity<>(book, HttpStatus.CREATED);
     }
 
     @PutMapping("books/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Book updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
         if (id == null)  // throw badRequest if book id is null
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         Book oldBook = service.getById(id);
         if (oldBook != null) {
             updatedBook.setId(oldBook.getId());
             service.updateBook(updatedBook);
-            return updatedBook;
+            return new ResponseEntity<>(updatedBook, HttpStatus.NO_CONTENT);
         } else { // throws notFound if the book to update does not exist
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with id: " + id);
         }
@@ -105,10 +105,13 @@ public class BooksController {
 
     @DeleteMapping("books/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteBookById(@PathVariable Long id) {
+    public ResponseEntity<String> deleteBookById(@PathVariable Long id) {
         if (id == null) // throw badRequest if book id is null
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
-        return service.deleteBookById(id) ? "Book with id " + id + " was deleted successfully" : "Book with id" + id + " was not deleted";
+        return new ResponseEntity<>(
+                service.deleteBookById(id) ? "Book with id " + id + " was deleted successfully" : "Book with id" + id + " was not deleted",
+                HttpStatus.NO_CONTENT
+        );
     }
 
 }

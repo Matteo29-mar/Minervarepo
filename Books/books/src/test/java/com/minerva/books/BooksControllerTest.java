@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -20,7 +21,6 @@ import static org.hamcrest.core.Is.is;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
@@ -64,7 +64,7 @@ class BooksControllerTest {
     @Test
     void getBookById_success() throws Exception{
 
-        given(controller.getBook(book_1.getId())).willReturn(book_1);
+        given(controller.getBook(book_1.getId())).willReturn(ResponseEntity.ok(book_1));
         mvc.perform(get(new URI("/api/v1/books/"+ book_1.getId()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class BooksControllerTest {
     @Test
     void getBookByISBN_success() throws Exception {
 
-        given(controller.getBookByISBN(book_1.getISBN())).willReturn(book_1.getId());
+        given(controller.getBookByISBN(book_1.getISBN())).willReturn(ResponseEntity.ok(book_1.getId()));
         mvc.perform(get(new URI("/api/v1/books/isbn"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("code", book_1.getISBN()))
@@ -117,7 +117,7 @@ class BooksControllerTest {
 
     @Test
     void addBook_success() throws Exception{
-        given(controller.addBook(book_1)).willReturn(book_1);
+        given(controller.addBook(book_1)).willReturn(ResponseEntity.created(new URI("/" + book_1.getId())).body(book_1));
         mvc.perform(MockMvcRequestBuilders.post(new URI("/api/v1/books"))
                 .accept(MediaType.APPLICATION_JSON)
                 .content(book_1_json)
@@ -147,12 +147,11 @@ class BooksControllerTest {
     @Test
     void updateBook_success() throws Exception{
         book_1_updated.setId(book_1.getId());
-        given(controller.updateBook(book_1.getId(), book_1_updated)).willReturn(book_1_updated);
+        given(controller.updateBook(book_1.getId(), book_1_updated)).willReturn(ResponseEntity.noContent().build());
         mvc.perform(MockMvcRequestBuilders.put(new URI("/api/v1/books/" + book_1.getId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(book_1_updated_json))
-                .andExpect(status().isNoContent())
-                .andExpect(jsonPath("titolo", equalTo("TestTitleUpdated")));
+                .andExpect(status().isNoContent());
 
     }
 
@@ -178,7 +177,7 @@ class BooksControllerTest {
 
     @Test
     void deleteBookById_success() throws Exception {
-        given(controller.deleteBookById(book_1.getId())).willReturn("Book with id " + book_1.getId() + " was deleted successfully");
+        given(controller.deleteBookById(book_1.getId())).willReturn(ResponseEntity.noContent().build());
         mvc.perform(MockMvcRequestBuilders.delete(new URI("/api/v1/books/" + book_1.getId())))
                 .andExpect(status().isNoContent());
     }
