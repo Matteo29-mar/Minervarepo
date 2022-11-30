@@ -80,8 +80,16 @@ public class BooksController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         Book oldBook = service.getById(id);
         if (oldBook != null) {
-            updatedBook.setId(oldBook.getId());
-            service.updateBook(updatedBook);
+            if(updatedBook.getISBN() != null) oldBook.setISBN(updatedBook.getISBN());
+            if(updatedBook.getTitolo() != null) oldBook.setTitolo(updatedBook.getTitolo());
+            if(updatedBook.getAnno() >= 1) oldBook.setAnno(updatedBook.getAnno());
+            if(updatedBook.getAutore() != null) oldBook.setAutore(updatedBook.getAutore());
+            if(updatedBook.getData_inizio() != null) oldBook.setData_inizio(updatedBook.getData_inizio());
+            if(updatedBook.getEditore() != null) oldBook.setEditore(updatedBook.getEditore());
+            if(updatedBook.getGenere() != null) oldBook.setGenere(updatedBook.getGenere());
+            if(updatedBook.getStato() != null) oldBook.setStato(updatedBook.getStato());
+            if(updatedBook.getN_pagine() != 0) oldBook.setN_pagine(updatedBook.getN_pagine());
+            service.updateBook(oldBook);
             return new ResponseEntity<>(updatedBook, HttpStatus.NO_CONTENT);
         } else { // throws notFound if the book to update does not exist
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with id: " + id);
