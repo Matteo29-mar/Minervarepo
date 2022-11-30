@@ -10,9 +10,10 @@ server:
 springdoc:
   api-docs:
     enabled: true
-    path: /minerva/books/docs/api-docs
+    path: /docs/api-docs
   swagger-ui:
-    path: /minerva/books/docs/swagger-ui.html
+    path: /docs/swagger-ui
+
 
 
 spring:
