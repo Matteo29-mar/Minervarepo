@@ -49,32 +49,17 @@ public class BooksController {
     }
 
     @GetMapping("books/isbn")
-    public ResponseEntity<Long> getBookByISBN(@Valid @RequestParam String code) {
-        idFound = 0L;
+    public ResponseEntity<Object> getBookByISBN(@Valid @RequestParam String code, @RequestParam String source) {
         if (code == null) // throw badRequest if book isbn is null
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ISBN code cannot be null");
         List<Book> books = service.getByISBN(code);
         if ( books == null) // throw notFound if request isbn is not present in db
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find book with ISBN: " +  code);
-        books.forEach((book) -> { // check whole list to update status of books with requested isbn
-            // checks if a month has passed since the previous borrowing of the book and the state isn't "libero"
-            if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && this.idFound == 0L) {
-                    this.idFound = book.getId(); // sets idFound with book id
-                    book.setData_inizio(LocalDate.now()); // sets borrowing start date to current DateTime
-                    book.setStato("in_prestito"); // updates book status to "in_prestito"
-                    service.updateBook(book); // updates book with new detail
-            } else if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && idFound != 0L ) { // if first available book has already been found
-                book.setStato("libero"); // updates book status to "libero"
-                service.updateBook(book); // updates book in db
-                sender.SendNotification("A book with isbn: "+ code + " is now free");
-            }
-        });
-        if (idFound == 0L) {
-            sender.SendNotification("We're sorry, there are no available books with isbn: " + code);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no available books with ISBN: " + code);
-        }
-
-        return new ResponseEntity<>(idFound, HttpStatus.OK); // returns first available book's id to endpoint response
+        return switch (source) {
+            case "borrowing" -> getISBNID(books, code);
+            case "reservation" -> getISBNBoolean(books);
+            default -> new ResponseEntity<>("Selected source does not exist", HttpStatus.BAD_REQUEST);
+        };
     }
 
     @PostMapping("books")
@@ -112,6 +97,39 @@ public class BooksController {
                 service.deleteBookById(id) ? "Book with id " + id + " was deleted successfully" : "Book with id" + id + " was not deleted",
                 HttpStatus.NO_CONTENT
         );
+    }
+
+    private ResponseEntity<Object> getISBNID(List<Book> books, String code){
+        idFound = 0L;
+        books.forEach((book) -> { // check whole list to update status of books with requested isbn
+            // checks if a month has passed since the previous borrowing of the book and the state isn't "libero"
+            if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && this.idFound == 0L) {
+                this.idFound = book.getId(); // sets idFound with book id
+                book.setData_inizio(LocalDate.now()); // sets borrowing start date to current DateTime
+                book.setStato("in_prestito"); // updates book status to "in_prestito"
+                service.updateBook(book); // updates book with new detail
+            } else if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && idFound != 0L ) { // if first available book has already been found
+                book.setStato("libero"); // updates book status to "libero"
+                service.updateBook(book); // updates book in db
+                sender.SendNotification("A book with isbn: "+ code + " is now free");
+            }
+        });
+        if (idFound == 0L) {
+            sender.SendNotification("We're sorry, there are no available books with isbn: " + code);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no available books with ISBN: " + code);
+        }
+
+        return new ResponseEntity<>(idFound, HttpStatus.OK); // returns first available book's id to endpoint response
+    }
+
+    private ResponseEntity<Object> getISBNBoolean(List<Book> books) {
+
+        for (Book book : books) {
+            if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1))) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
 }

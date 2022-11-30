@@ -14,10 +14,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -88,20 +88,64 @@ class BooksControllerTest {
     }
 
     @Test
-    void getBookByISBN_success() throws Exception {
+    void getBookByISBN_success_borrowing() throws Exception {
 
-        given(controller.getBookByISBN(book_1.getISBN())).willReturn(ResponseEntity.ok(book_1.getId()));
+        given(controller.getBookByISBN(book_1.getISBN(), "borrowing")).willReturn(ResponseEntity.ok(book_1.getId()));
         mvc.perform(get(new URI("/api/v1/books/isbn"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("code", book_1.getISBN()))
+                .param("code", book_1.getISBN())
+                .param("source", "borrowing"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(equalTo(book_1.getId()), Long.class));
 
     }
 
     @Test
-    void getBookByISBN_error_codeIsNull() throws Exception {
-        given(controller.getBookByISBN(null)).willReturn(null);
+    void getBookByISBN_success_borrowing_butNotFound() throws Exception {
+
+        given(controller.getBookByISBN(book_1.getISBN(), "borrowing")).willReturn(ResponseEntity.notFound().build());
+        mvc.perform(get(new URI("/api/v1/books/isbn"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("code", book_1.getISBN())
+                        .param("source", "borrowing"))
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    void getBookByISBN_success_reservation() throws Exception {
+
+        given(controller.getBookByISBN(book_1.getISBN(), "reservation")).willReturn(ResponseEntity.ok(true));
+        mvc.perform(get(new URI("/api/v1/books/isbn"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("code", book_1.getISBN())
+                        .param("source", "reservation"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+
+    }
+    @Test
+    void getBookByISBN_success_reservation_butNotFound() throws Exception {
+
+        given(controller.getBookByISBN(book_1.getISBN(), "reservation")).willReturn(ResponseEntity.notFound().build());
+        mvc.perform(get(new URI("/api/v1/books/isbn"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("code", book_1.getISBN())
+                        .param("source", "reservation"))
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    void getBookByISBN_error_codeIsNull_borrowing() throws Exception {
+        given(controller.getBookByISBN(null, "borrowing")).willReturn(null);
+        mvc.perform(get(new URI("/api/v1/books/isbn"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void getBookByISBN_error_codeIsNull_reservation() throws Exception {
+        given(controller.getBookByISBN(null, "reservation")).willReturn(null);
         mvc.perform(get(new URI("/api/v1/books/isbn"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -109,10 +153,25 @@ class BooksControllerTest {
 
 
    @Test
-   void getBookByISBN_error_bookNotFound() throws Exception{
-        willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).given(controller).getBookByISBN("9788869059384");
+   void getBookByISBN_error_bookNotFound_borrowing() throws Exception{
+        willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).given(controller).getBookByISBN("9788869059384", "borrowing");
         mvc.perform(get(new URI("/api/v1/books/isbn"))
-                .param("code","9788869059384")).andExpect(status().isNotFound());
+                .param("code","9788869059384")
+                .param("source", "borrowing")).andExpect(status().isNotFound());
+    }
+    @Test
+   void getBookByISBN_error_bookNotFound_reservation() throws Exception{
+        willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).given(controller).getBookByISBN("9788869059384", "reservation");
+        mvc.perform(get(new URI("/api/v1/books/isbn"))
+                .param("code","9788869059384")
+                .param("source", "reservation")).andExpect(status().isNotFound());
+    }
+   @Test
+   void getBookByISBN_error_wrongSource() throws Exception{
+        willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST)).given(controller).getBookByISBN("9788869059384", "reserve");
+        mvc.perform(get(new URI("/api/v1/books/isbn"))
+                .param("code","9788869059384")
+                .param("source", "reserve")).andExpect(status().isBadRequest());
     }
 
     @Test
