@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="24be40e7-6519-4b8d-a486-30556e1bd261" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Customers/src/main/java/com/minerva/Customers/customer_controller/CustomerController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Customers/src/main/java/com/minerva/Customers/customer_entitiy/Customers.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Customers/src/main/java/com/minerva/Customers/customer_repository/customer_repository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Customers/src/main/java/com/minerva/Customers/customer_service/CustomerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Customers/src/main/java/com/minerva/Customers/customer_service/customer_service_impl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Customers/src/test/java/com/minerva/Customers/customer_service/CustomerServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +10,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -32,7 +27,8 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/matte/OneDrive/Desktop/progetti/Progettomicroservices/customer/Customers",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/ICTS21-23.100/IdeaProjects/assignments/Minervarepo/customer/Customers",
     "project.structure.last.edited": "Global Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -47,8 +43,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1669384093102</updated>
+      <workItem from="1669882333202" duration="23000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

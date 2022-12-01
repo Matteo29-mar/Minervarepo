@@ -1,0 +1,15 @@
+#spring:
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgres://ip:porta/nome_database
+#    username: username_db
+#    password: password_db
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#
+#  sql:
+#    init:
+#      platform: postgres
