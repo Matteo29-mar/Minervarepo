@@ -41,7 +41,7 @@ public class customer_service_impl implements CustomerService {
         } 
         return customers;
     }
-//meglio email perchè oltre all' id è molto più unica 
+//meglio email perchè oltre all' id è molto più unica
     @Override    
         public List<Customers> getByEmail(String Email) {
        List<Customers> customers1 = repository.findCustomersByEmail(Email);
