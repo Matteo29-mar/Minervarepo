@@ -1,2 +1,2 @@
-# Repository Groppo progetto Minerva Books
+# Repository Gruppo progetto Minerva Books
 
