@@ -1,6 +1,6 @@
 # Repository Gruppo progetto Minerva Books
 
-<<<<<<< HEAD
+
 =======
 ## Finalità del progetto
 Sviluppare un servizio di prestiti bibloteca, per il prestito di libri.
@@ -19,4 +19,4 @@ Sviluppare un servizio di prestiti bibloteca, per il prestito di libri.
 - Paolo Carena
 - Elisa Cat-Genova
 - Assia Samime
->>>>>>> c77aeb4780e0560ce74e13f70081bb8dfb565012
+
