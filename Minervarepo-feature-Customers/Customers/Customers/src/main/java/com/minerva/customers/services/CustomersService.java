@@ -23,4 +23,6 @@ public interface CustomersService {
     boolean deleteCustomersById(Long id);
 
 
+    void updateCustomer(Customers oldCustomer);
+
 }

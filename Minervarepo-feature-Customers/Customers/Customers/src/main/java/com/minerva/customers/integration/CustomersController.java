@@ -3,6 +3,8 @@ package com.minerva.customers.integration;
 import com.minerva.customers.entities.Customers;
 import com.minerva.customers.repo.CustomersReposi;
 import com.minerva.customers.services.CustomersService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import javax.validation.Valid;
@@ -11,6 +13,7 @@ import java.util.Optional;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Slf4j
@@ -21,31 +24,34 @@ public class CustomersController {
     @Autowired
     private final CustomersReposi customerRepository;
 
-    private Long idFound = 0L;
-
-
     public CustomersController(CustomersService service, CustomersReposi customerRepository) {
         this.service = service;
         this.customerRepository = customerRepository;
     }
-    @GetMapping("/customers")
-    public List<Customers> getAll() {
-        return service.getAllCustomers();
-    }
+
+
     // CREATE
     @RequestMapping(method = RequestMethod.POST)
-    public Customers addCustomers(@Valid @RequestBody Customers customer) {
-        return customerRepository.save(customer);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Customers> addCustomers(@Valid @RequestBody Customers newCustomers) {
+        if (newCustomers == null) // throw badRequest if body doesn't contain a Customers Obj
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "customer cannot be null");
+        Customers customer = service.addCustomers(newCustomers);
+        if (customer == null) // throws internalError if customer was not added
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not create requested Customers");
+        return new ResponseEntity<>(customer, HttpStatus.CREATED);
     }
 
 
     // READ
     @RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
-    public Customers getCustomers(@PathVariable Long customersid) {
-        Optional<Customers> customerOptional = customerRepository.findById(customersid);
-        if(customerOptional.isPresent())
-            return customerOptional.get();
-        return null;
+    public ResponseEntity<Customers> getCustomers(@PathVariable Long id) {
+        if (id == null) // throw badRequest if Customers id is null
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id cannot be null");
+        Customers found = service.getById(id);
+        if (found == null) // throw notFound if requested Customers doesn't exist
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find Customers with id: " + id);
+        return new ResponseEntity<>(found, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -54,11 +60,25 @@ public class CustomersController {
         return customerRepository.findAll();
     }
 
-
     // UPDATE
     @RequestMapping(value = "/{customerId}", method = RequestMethod.PUT)
-    public Customers updateCUstomers(@RequestBody Customers customer, @RequestBody String customerId ) {
-        return customerRepository.save(customer);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Customers> updateCustomer(@PathVariable Long customersid, @RequestBody Customers updatedCustomer) {
+        if (customersid == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id  cannot be null");
+        Customers oldCustomer = service.getById(customersid);
+        if (oldCustomer != null) {
+            if(updatedCustomer.getNome() != null) oldCustomer.setNome(updatedCustomer.getNome());
+            if(updatedCustomer.getCognome() != null) oldCustomer.setCognome(updatedCustomer.getCognome());
+            if(updatedCustomer.getEmail() != null) oldCustomer.setEmail(updatedCustomer.getEmail());
+            if(updatedCustomer.getTelefono() != null) oldCustomer.setTelefono(updatedCustomer.getTelefono());
+            if(updatedCustomer.getData_nascita() != null) oldCustomer.setData_nascita(updatedCustomer.getData_nascita());
+
+            service.updateCustomers(oldCustomer);
+            return new ResponseEntity<>(updatedCustomer, HttpStatus.NO_CONTENT);
+        } else { // throws notFound if the Customer to update does not exist
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find Customer with id: " + customersid);
+        }
     }
 
 
@@ -66,10 +86,13 @@ public class CustomersController {
     @RequestMapping(method = RequestMethod.DELETE)
     public void deleteAllCustomers() {
         customerRepository.deleteAll();
+        log.info("Delete all customers");
     }
 
     @RequestMapping(value = "/{customerId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCustomers(@PathVariable Long customerId) {
         customerRepository.deleteById(customerId);
+        log.info("Delete customer with id" + customerId);
     }
 }
