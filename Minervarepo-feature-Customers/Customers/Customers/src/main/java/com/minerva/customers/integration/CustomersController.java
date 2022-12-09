@@ -31,7 +31,7 @@ public class CustomersController {
 
 
     // CREATE
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value ="/customer", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Customers> addCustomers(@Valid @RequestBody Customers newCustomers) {
         if (newCustomers == null) // throw badRequest if body doesn't contain a Customers Obj

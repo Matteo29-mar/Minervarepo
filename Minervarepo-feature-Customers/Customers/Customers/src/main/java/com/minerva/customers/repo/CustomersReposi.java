@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface CustomersReposi extends JpaRepository<Customers, Long> {
 
-    @Query("select b from customers b where b.email like ?")
+    @Query("select b from Customers b where b.email like ?1")
     List<Customers> findCustomersByemail(@NonNull String email);
 
 }

@@ -13,10 +13,9 @@ public class Customers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private static Long customersid;
-    @Column(nullable = false, length = 13)
+    private Long customersid;
+    @Column(nullable = false)
     @NotEmpty
-    @Size(min = 13, max = 13 )
 
     private String nome;
     @Column(nullable = false)
@@ -50,7 +49,7 @@ public class Customers {
     public Customers() {
     }
 
-    public static Long getCustomersid() {
+    public  Long getCustomersid() {
         return customersid;
     }
 

@@ -53,12 +53,12 @@ public class CustomersServiceImpl implements CustomersService {
 
     @Override
     public Customers addCustomers(Customers newCustomers) {
-        return null;
+        return repo.save(newCustomers);
     }
 
     @Override
     public Customers updateCustomers(Customers updatedCustomers) {
-        return null;
+        return repo.save(updatedCustomers);
     }
 
     @Override
@@ -67,6 +67,11 @@ public class CustomersServiceImpl implements CustomersService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find customer with id: " + id);
         repo.deleteById(id);
         return repo.findById(id).isEmpty();
+
+    }
+
+    @Override
+    public void updateCustomer(Customers oldCustomer) {
 
     }
 }
