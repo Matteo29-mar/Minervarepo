@@ -150,10 +150,10 @@ public class BooksController {
             if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && this.idFound == 0L) {
                 this.idFound = book.getId(); // sets idFound with book id
                 book.setData_inizio(LocalDate.now()); // sets borrowing start date to current DateTime
-                book.setStato("in_prestito"); // updates book status to "in_prestito"
+                book.setStato("borrowed"); // updates book status to "borrowed"
                 service.updateBook(book); // updates book with new detail
             } else if (LocalDate.now().isAfter(book.getData_inizio().plusMonths(1)) && idFound != 0L ) { // if first available book has already been found
-                book.setStato("libero"); // updates book status to "libero"
+                book.setStato("available"); // updates book status to "libero"
                 service.updateBook(book); // updates book in db
                 sender.SendNotification("A book with isbn: "+ code + " is now free");
             }
