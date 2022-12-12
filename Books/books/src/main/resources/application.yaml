@@ -14,8 +14,6 @@ springdoc:
   swagger-ui:
     path: /docs/swagger-ui
 
-
-
 spring:
   output:
     ansi:

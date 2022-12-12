@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("api/v1")
 public class BooksController {
 
-    private final Logger bookLogger = LoggerFactory.getLogger(BooksController.class);
+    private Logger bookLogger ;
 
     private final BooksService service;
 
@@ -31,11 +31,13 @@ public class BooksController {
     */
     private Long idFound = 0L;
 
+
     private final BookNotificationSender sender;
 
-    public BooksController(BooksService service, BookNotificationSender sender) {
+    public BooksController(BooksService service, BookNotificationSender sender, Logger bookLogger) {
         this.service = service;
         this.sender = sender;
+        this.bookLogger = LoggerFactory.getLogger(BooksController.class);
     }
 
     @GetMapping("/books")
