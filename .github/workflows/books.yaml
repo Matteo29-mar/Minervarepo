@@ -16,7 +16,7 @@ jobs:
       - name: Build image and publish to Docker Hub
         uses: docker/build-push-action@v1
         with:
-          - username: imnotikeatits
-          - password: Ett0r317#@
-            repository: imnotikeatits/minerva-books
-            tags: ${{github.run_number}}
+          username: imnotikeatits
+          password: Ett0r317#@
+          repository: imnotikeatits/minerva-books
+          tags: ${{github.run_number}}
