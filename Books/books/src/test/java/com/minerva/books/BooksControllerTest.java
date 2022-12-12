@@ -1,7 +1,7 @@
 package com.minerva.books;
 
 import com.minerva.books.entities.Book;
-import com.minerva.books.integration.BooksController;
+import com.minerva.books.controllers.BooksController;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
