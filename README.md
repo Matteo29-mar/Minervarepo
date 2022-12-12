@@ -18,3 +18,5 @@ Sviluppare un servizio di prestiti bibloteca, per il prestito di libri.
 - Elisa Cat-Genova
 - Assia Samime
 
+![Minerva Design](./design.png)
+
