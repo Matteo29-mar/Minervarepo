@@ -1,0 +1,23 @@
+name: Build and publish Books microservice Docker Image
+
+on:
+  push:
+    branches: [feature/Books]
+  pull_requests:
+    branches: [feature/Books]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: build microservice with maven
+        run: mvn clean install
+      - name: Build image and publish to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          - username: imnotikeatits
+          - password: Ett0r317#@
+            repository:
+              imnotikeatits/minerva-books
+            tags: ${{github.run_number}}
