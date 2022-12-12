@@ -20,8 +20,8 @@ jobs:
           username: imnotikeatits
           password: Ett0r317#@
       - name: Build and push books microservice docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v1.0.0
         with:
-          file:  Books/books/docker/Dockerfile
+          dockerfile: Books/books/docker/Dockerfile
           push: true
           tags: imnotikeatits/minerva-books:${{github.run_number}}
