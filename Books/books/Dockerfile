@@ -1,8 +1,8 @@
 FROM openjdk:17-alpine
 WORKDIR /app
-COPY ..mvn/ ./mvn
+COPY .mvn/ ./mvn
 COPY mvnw pom.xml ./
-RUN ../mvnw dependency:go-offline
+RUN ./mvnw dependency:go-offline
 RUN mkdir ./src
-COPY ../src /app/src
+COPY ./src /app/src
 CMD ["./mvnw", "spring-boot:run"]
