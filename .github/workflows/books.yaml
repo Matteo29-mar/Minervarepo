@@ -10,6 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: setup jdk 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Build with Maven
+        run: mvn clean package --file ./Books/books/pom.xml
       - name: Set up QEMU for books microservice
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
