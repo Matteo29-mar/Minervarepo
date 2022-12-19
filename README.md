@@ -1,6 +1,6 @@
 # Repository Gruppo progetto Minerva Books
 
-[![Books CI/CD](https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml/badge.svg)](https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml)
+[![Minerva CI/CD](https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml/badge.svg)](https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml)
 
 ## Finalità del progetto
 Sviluppare un servizio di prestiti bibloteca, per il prestito di libri.
