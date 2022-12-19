@@ -7,7 +7,7 @@ on:
     branches: [feature/Books]
 
 jobs:
-  build:
+  books-micro:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
