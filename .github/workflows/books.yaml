@@ -1,4 +1,4 @@
-name: Books CI/CD
+name: Minerva CI/CD
 
 on:
   push:
