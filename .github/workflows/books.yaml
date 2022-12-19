@@ -22,6 +22,6 @@ jobs:
       - name: Build and push books microservice docker image
         uses: docker/build-push-action@v3
         with:
-          file: "Books/books/docker/Dockerfile"
+          file: "Books/books/Dockerfile"
           push: true
           tags: imnotikeatits/minerva-books:${{github.run_number}}
