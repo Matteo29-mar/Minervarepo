@@ -20,7 +20,7 @@ jobs:
           username: imnotikeatits
           password: Ett0r317#@
       - name: Build and push books microservice docker image
-        uses: docker/build-push-action@v1.0.0
+        uses: docker/build-push-action@v3
         with:
           file: "{{defaultContext}}:Books/books/docker/Dockerfile"
           push: true
