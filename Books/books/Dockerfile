@@ -1,8 +1,10 @@
-FROM openjdk:17-alpine
-WORKDIR /minerva/books
-COPY mvnw ./
-COPY pom.xml ./
-RUN mkdir ./src
-RUN ./mvnw dependency:go-offline
-COPY src ./src
-CMD ["./mvnw", "spring-boot:run"]
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
+
+
+FROM openjdk:17-jre-slim
+COPY --from=build /home/app/target/*.jar /usr/local/lib/app.jar
+EXPOSE 9011
+ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
