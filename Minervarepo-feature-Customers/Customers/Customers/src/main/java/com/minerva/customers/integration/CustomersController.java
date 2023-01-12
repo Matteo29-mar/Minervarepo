@@ -44,7 +44,7 @@ public class CustomersController {
 
 
     // READ
-    @RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Customers> getCustomers(@PathVariable Long id) {
         if (id == null) // throw badRequest if Customers id is null
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id cannot be null");
@@ -61,12 +61,12 @@ public class CustomersController {
     }
 
     // UPDATE
-    @RequestMapping(value = "/{customerId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{customersId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Customers> updateCustomer(@PathVariable Long customersid, @RequestBody Customers updatedCustomer) {
-        if (customersid == null)
+    public ResponseEntity<Customers> updateCustomer(@PathVariable Long customersId, @RequestBody Customers updatedCustomer) {
+        if (customersId == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id  cannot be null");
-        Customers oldCustomer = service.getById(customersid);
+        Customers oldCustomer = service.getById(customersId);
         if (oldCustomer != null) {
             if(updatedCustomer.getNome() != null) oldCustomer.setNome(updatedCustomer.getNome());
             if(updatedCustomer.getCognome() != null) oldCustomer.setCognome(updatedCustomer.getCognome());
@@ -77,22 +77,24 @@ public class CustomersController {
             service.updateCustomers(oldCustomer);
             return new ResponseEntity<>(updatedCustomer, HttpStatus.NO_CONTENT);
         } else { // throws notFound if the Customer to update does not exist
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find Customer with id: " + customersid);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find Customer with id: " + customersId);
         }
     }
 
 
     // DELETE
     @RequestMapping(method = RequestMethod.DELETE)
-    public void deleteAllCustomers() {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteAllCustomers() {
         customerRepository.deleteAll();
         log.info("Delete all customers");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/{customerId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{customersid}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCustomers(@PathVariable Long customerId) {
-        customerRepository.deleteById(customerId);
-        log.info("Delete customer with id" + customerId);
+    public void deleteCustomers(@PathVariable Long customersid) {
+        customerRepository.deleteById(customersid);
+        log.info("Delete customer with id" + customersid);
     }
 }
