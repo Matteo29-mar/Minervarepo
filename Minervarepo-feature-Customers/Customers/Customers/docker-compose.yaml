@@ -1,0 +1,33 @@
+version: "3.1"
+
+services:
+
+  customersdb:
+    image: mariadb:latest
+    container_name: minervacustomers
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+      MARIADB_USER: minervacustomers
+      MARIADB_PASSWORD: minervacustomers
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+      MARIADB_DATABASE: minervacustomers
+
+    networks:
+      - mincustomers
+
+  customers:
+
+    container_name: minerva-customers-micro
+    image: matteo29mar/minervacustomers:1.4
+    ports:
+        - "8080:8080"
+
+    networks:
+      - mincustomers
+
+    depends_on:
+      - customersdb
+networks:
+  mincustomers:
