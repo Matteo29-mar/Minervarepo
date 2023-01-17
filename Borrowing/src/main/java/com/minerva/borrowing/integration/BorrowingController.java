@@ -1,6 +1,7 @@
 package com.minerva.borrowing.integration;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,17 +24,22 @@ import com.minerva.borrowing.service.BorrowingService;
 @RestController
 @RequestMapping("api")
 public class BorrowingController {
-	
+
 	@Autowired
-	private BorrowingService service;
-	
+	private final BorrowingService service;
+
+	Logger logger = Logger.getLogger(BorrowingController.class.getName());
+
 	public BorrowingController(BorrowingService service) {
-        this.service = service;
+
+		this.service = service;
     }
 	
 	@GetMapping("/borrowing")
 	public List<Borrowing>getAll(){
-		 return this.service.getAllBorrowing();
+
+		logger.info("Get all borrowings");
+		return service.getAllBorrowing();
 	}
 	@GetMapping("borrowing/{id}")
 	public ResponseEntity<Borrowing> getBorrowing(@PathVariable String id) {
@@ -43,6 +49,7 @@ public class BorrowingController {
         if (found == null) // throw notFound if requested borrowing doesn't exist
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find borrowing with id: " + id);
         return new ResponseEntity<>(found, HttpStatus.OK);
+
 	}
 	
 	@PostMapping("borrowing")
@@ -81,9 +88,9 @@ public class BorrowingController {
 	    public ResponseEntity<String> deleteBorrowingById(@PathVariable String id) {
 	        if (id == null) // throw badRequest if borrowing id is null
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id libri cannot be null");
-	        return new ResponseEntity<>(
+			return new ResponseEntity<>(
 	                service.deleteBorrowingById(id) ? "Borrowing with id " + id + " was deleted successfully" : "Borrowing with id" + id + " was not deleted",
-	                HttpStatus.NO_CONTENT
-	        );
-	    }
+	                HttpStatus.NO_CONTENT);
+
+	 }
 }
