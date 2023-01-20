@@ -1,37 +1,60 @@
 package com.minerva.borrowing.entities;
-
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+
+
+
+
 
 
 
 @Document("borrowings")
 public class Borrowing {
 
+
 	@Id
 	private String id;
 
+
 	private String[] id_libri;
 
-	private LocalDate data_inizio = LocalDate.now();
 
-	private LocalDate data_scadenza = data_inizio.plusDays(30);
+	private LocalDate data_inizio;
+
+
+	private LocalDate data_scadenza;
+
 
 	private LocalDate data_riconsegna;
+
+
 
 
 	private String id_cliente;
 
 
-	public Borrowing(String Id, String id_libri, LocalDate data_inizio, LocalDate data_scadenza, LocalDate data_riconsegna, String id_cliente) {
 
 
+
+
+
+
+	public Borrowing(String id, String[] id_libri, LocalDate data_inizio, LocalDate data_scadenza, LocalDate data_riconsegna, String id_cliente) {
+
+
+		this.id= id;
+		this.id_libri= id_libri;
+		this.data_inizio= data_inizio;
+		this.data_scadenza= data_scadenza;
+		this.data_riconsegna= data_riconsegna;
+		this.id_cliente= id_cliente;
 	}
+
+
 
 
 	public String getId() {
@@ -73,6 +96,9 @@ public class Borrowing {
 
 
 
+
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -81,6 +107,7 @@ public class Borrowing {
 		result = prime * result + Objects.hash(data_inizio, data_riconsegna, data_scadenza, id, id_cliente);
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -96,6 +123,7 @@ public class Borrowing {
 				&& Objects.equals(data_scadenza, other.data_scadenza) && Objects.equals(id, other.id)
 				&& Objects.equals(id_cliente, other.id_cliente) && Arrays.equals(id_libri, other.id_libri);
 	}
+
 
 	@Override
 	public String toString() {
@@ -115,8 +143,6 @@ public class Borrowing {
 		builder.append("]");
 		return builder.toString();
 	}
-
-
 
 
 }

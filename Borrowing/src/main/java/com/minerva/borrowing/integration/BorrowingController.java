@@ -3,7 +3,7 @@ package com.minerva.borrowing.integration;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +25,7 @@ import com.minerva.borrowing.service.BorrowingService;
 @RequestMapping("api")
 public class BorrowingController {
 
-	@Autowired
+	private Logger borrowingLogger;
 	private final BorrowingService service;
 
 	Logger logger = Logger.getLogger(BorrowingController.class.getName());
@@ -33,13 +33,13 @@ public class BorrowingController {
 	public BorrowingController(BorrowingService service) {
 
 		this.service = service;
-    }
+	}
 	
 	@GetMapping("/borrowing")
 	public List<Borrowing>getAll(){
 
 		logger.info("Get all borrowings");
-		return service.getAllBorrowing();
+		return this.service.getAllBorrowing();
 	}
 	@GetMapping("borrowing/{id}")
 	public ResponseEntity<Borrowing> getBorrowing(@PathVariable String id) {
@@ -65,8 +65,8 @@ public class BorrowingController {
 	
 	
 	 @PutMapping("borrowing/{id}")
-	    @ResponseStatus(HttpStatus.NO_CONTENT)
-	    public ResponseEntity<Borrowing> updateBorrowing(@PathVariable String id, @RequestBody Borrowing updatedBorrowing) {
+	 @ResponseStatus(HttpStatus.NO_CONTENT)
+	 public ResponseEntity<Borrowing> updateBorrowing(@PathVariable String id, @RequestBody Borrowing updatedBorrowing) {
 	        if (id == null)  // throw badRequest if borrowing id is null
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id libri cannot be null");
 	        Borrowing oldBorrowing = service.getBorrowingById(id);
@@ -84,7 +84,7 @@ public class BorrowingController {
 	    }
 	 
 	 @DeleteMapping("borrowing/{id}")
-	    @ResponseStatus(HttpStatus.NO_CONTENT)
+	 @ResponseStatus(HttpStatus.NO_CONTENT)
 	    public ResponseEntity<String> deleteBorrowingById(@PathVariable String id) {
 	        if (id == null) // throw badRequest if borrowing id is null
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id libri cannot be null");

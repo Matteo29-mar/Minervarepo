@@ -3,6 +3,7 @@ package com.minerva.borrowing.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,11 +75,10 @@ public class BorrowingServiceImpl implements BorrowingService{
 
 	@Override
 	public boolean deleteBorrowingById(String id) {
-	/*	if( !repo.findById(id).isPresent())
+		if( !repo.findById(id).isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find borrowing with id: " + id);
         repo.deleteById(id);
-        return repo.findById(id).isEmpty();
-		*/
+
 		return repo.findById(id).isEmpty();
 	}
 
