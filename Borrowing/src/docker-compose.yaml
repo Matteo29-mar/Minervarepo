@@ -6,15 +6,16 @@ services:
     image: mongo:latest
     container_name: minervaborrowing
     ports:
-      - 27017:27018
+      - "27017:27018"
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: Prestiti
+      MONGO_INITDB_ROOT_PASSWORD: E2Lge3zczAvjQ61f
+      MONGO_INITDB_DATABASE: Borrowing
 
     volumes:
       - mongodb_data:/data/db
 
 volumes:
       mongodb_data: { }
+
