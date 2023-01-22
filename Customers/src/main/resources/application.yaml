@@ -13,3 +13,31 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+      
+  rabbitmq:
+    host: minerva-rabbit
+    virtual-host: /
+    port: 5672
+    username: minervabooks
+    password: minervabooks@notify#
+    web:
+      resources:
+        add-mappings: false
+
+  logging:
+    level:
+      org:
+        springframework: error
+      com:
+        minerva: trace
+    pattern:
+      console: "%d{HH:mm:SSS} [%t] %-5level %logger{36} - %msg%n"
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include:
+            - health
+            - info
+            - prometheus
