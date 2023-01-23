@@ -1,5 +1,5 @@
 FROM maven:3.8.3-openjdk-17 AS build
-COPY Books/books/src /home/app/src
+COPY books/src /home/app/src
 COPY Books/books/pom.xml /home/app/
 RUN mvn -f /home/app/pom.xml clean package
 
