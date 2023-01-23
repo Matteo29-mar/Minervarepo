@@ -1,4 +1,4 @@
-[![Minerva CI/CD](https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml/badge.svg)](https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml)
+[![Minerva CI/CD](https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml/badge.svg)]https://github.com/Matteo29-mar/Minervarepo/actions/workflows/books.yaml
 
 # Repository Gruppo progetto Minerva Books
     Exam project // ITS Cloud Specialist 2021-23
