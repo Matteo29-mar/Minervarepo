@@ -1,7 +1,7 @@
 FROM maven:3-sapmachine-17 as builder 
 ARG MVN_ARGS
 ADD ./src/ /app/src/
-COPY ./pom.xml /app/pom.xml
+COPY ./pom.xml /app/src/borrowing
 WORKDIR /app
 RUN mvn --batch-mode package ${MVN_ARGS}
 
