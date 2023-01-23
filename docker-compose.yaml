@@ -23,6 +23,16 @@ services:
       - mincustomers
     depends_on:
       - customersdb
+    #borrowing
+  borrowing:
+    container_name: minerva-borrowing-micro
+    image: elisacg/borrowing
+    ports:
+      - "8080:8080"
+    networks:
+      - minborrowing
+    depends_on:
+      - borrowingdb
 
   #borrowing db
   borrowingdb:
@@ -37,6 +47,8 @@ services:
       MONGO_INITDB_DATABASE: Borrowing
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - minborrowing
 
   #booksdb
   minerva-books-db:
@@ -67,6 +79,8 @@ services:
     ports:
       - "9090:9090"
 networks:
-        mincustomers:
+      mincustomers:
+      minborrowing:
+
 volumes:
         mongodb_data: {}
