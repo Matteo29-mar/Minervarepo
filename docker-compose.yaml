@@ -68,4 +68,4 @@ volumes:
   prometheus:
     image: prom/prometheus
     ports:
-      - "9090:9090
+      - "9090:9090"
