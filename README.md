@@ -28,7 +28,7 @@ Sviluppare un servizio di prestiti bibloteca, per il prestito di libri.
 ## Utenti all'interno del progetto:
 - [Matteo Marziano](https://github.com/Matteo29-mar)
 - [Elisa Cat-Genova](https://github.com/Cat-Genova)
-- [assia Samime](https://github.com/AssiaSam)
+- [Assia Samime](https://github.com/AssiaSam)
 - [Paolo Carena](https://github.com/GeassVi)
 
 
