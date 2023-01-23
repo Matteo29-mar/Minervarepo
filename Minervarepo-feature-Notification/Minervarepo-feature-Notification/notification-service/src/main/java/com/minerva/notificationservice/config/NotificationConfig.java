@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class NotificationConfig {
-    @Value("${spring.rabbitmq.host}")
+    @Value("${rabbitmq.host}")
     private String host;
 
-    @Value("${spring.rabbitmq.port}")
+    @Value("${rabbitmq.port}")
     private int port;
     @Value("${minerva.rabbitmq.queue}")
     String queueName;
 
-    @Value("${spring.rabbitmq.username}")
+    @Value("${rabbitmq.username}")
     String username;
 
-    @Value("${spring.rabbitmq.password}")
+    @Value("${rabbitmq.password}")
     String password;
 
     public ConnectionFactory connectionFactory(){

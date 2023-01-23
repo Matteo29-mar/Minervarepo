@@ -10,8 +10,10 @@ rabbitmq:
     virtual-host: /
     port: 5672
     username: minervanotify
-    password: @notify
+    password: notify
 
 minerva:
     rabbitmq:
         queue: minervaqueue
+
+
