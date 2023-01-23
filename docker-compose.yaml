@@ -1,0 +1,98 @@
+version: "3.1"
+
+services:
+  #db customer
+  customersdb:
+    image: mariadb:latest
+    container_name: minervacustomers
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+      MARIADB_USER: minervacustomers
+      MARIADB_PASSWORD: minervacustomers
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+      MARIADB_DATABASE: minervacustomers
+
+    networks:
+      - mincustomers
+
+  customers:
+    #customer
+    container_name: minerva-customers-micro
+    image: matteo29mar/minervacustomers:1.4
+    ports:
+      - "8080:8080"
+
+    networks:
+      - mincustomers
+      - minbooks
+
+    depends_on:
+      - customersdb
+networks:
+  mincustomers:
+
+  #borrowing db
+  borrowingdb:
+    image: mongo:latest
+    container_name: minervaborrowing
+    ports:
+      - "27017:27018"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: E2Lge3zczAvjQ61f
+      MONGO_INITDB_DATABASE: Borrowing
+
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data: { }
+
+
+  #booksdb
+  minerva-books-db:
+    image: mariadb:latest
+    container_name: minervabooks
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+      MARIADB_USER: uttsadmin
+      MARIADB_PASSWORD: appsistutt@admin#
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+      MARIADB_DATABASE: minerva-books-db
+
+    networks:
+      - minbooks
+    #rabbitmq
+ rabbitmq:
+     image: rabbitmq:3-management
+     ports:
+       - "5672:5672"
+       - "15672:15672"
+     environment:
+       - RABBITMQ_DEFAULT_USER=minervabooks
+       - RABBITMQ_DEFAULT_PASS=minervabooks@notify#   
+  #prometheus
+ prometheus:
+   image: prom/prometheus
+   ports:
+     - "9090:9090"
+   volumes:
+     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+   command:
+     - '--config.file=/etc/prometheus/prometheus.yml'
+    #grafana
+
+ grafana:
+   image: grafana/grafana
+     ports:
+        - "3000:3000"
+     environment:
+        - GF_SECURITY_ADMIN_USER=minerva
+        - GF_SECURITY_ADMIN_PASSWORD=minerva
+     depends_on:
+        - prometheus

@@ -1,0 +1,9 @@
+FROM maven:3-openjdk-17-slim as builder
+ADD ./src/ /app/src/notificationservice/src
+ADD ./pom.xml /app/src/notificationservice
+RUN mvn -f /app/src/notificationservice/pom.xml clean package
+
+FROM openjdk:17
+COPY --from=builder /app/src/notificationservice/target/*.jar notificationservice.jar
+EXPOSE 8102
+ENTRYPOINT ["java","-jar","notificationservice.jar"]
