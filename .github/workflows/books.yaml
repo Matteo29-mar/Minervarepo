@@ -25,4 +25,4 @@ jobs:
         with:
           file: "books/docker/Dockerfile"
           push: true
-          tags: imnotikeatits/minerva-books:${{github.run_number}}
+        ##  tags: imnotikeatits/minerva-books:${{github.run_number}}
