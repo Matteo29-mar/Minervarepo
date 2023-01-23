@@ -23,8 +23,7 @@ services:
       - mincustomers
     depends_on:
       - customersdb
-networks:
-  mincustomers:
+
   #borrowing db
   borrowingdb:
     image: mongo:latest
@@ -38,8 +37,7 @@ networks:
       MONGO_INITDB_DATABASE: Borrowing
     volumes:
       - mongodb_data:/data/db
-volumes:
-  mongodb_data: {}
+
   #booksdb
   minerva-books-db:
     image: mariadb:latest
@@ -68,3 +66,7 @@ volumes:
     image: prom/prometheus
     ports:
       - "9090:9090"
+networks:
+        mincustomers:
+volumes:
+        mongodb_data: {}
