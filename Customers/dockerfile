@@ -1,9 +1,11 @@
 FROM maven:3-openjdk-17-slim as builder
-COPY ./src /app/src/Customers/src
-COPY ./pom.xml /app/src/Customers
+COPY Customers/src /app/src/Customers/src
+COPY Customers/pom.xml /app/src/Customers
 RUN mvn -f /app/src/Customers/pom.xml clean package
 
 FROM openjdk:17
 COPY --from=builder /app/src/Customers/target/*.jar Customers.jar
 EXPOSE 8102
 ENTRYPOINT ["java","-jar","Customers.jar"]
+
+
