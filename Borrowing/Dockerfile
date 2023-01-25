@@ -1,8 +1,7 @@
 FROM maven:3-sapmachine-17 as builder 
-ARG MVN_ARGS
-ADD ./src/ /app/src/
-COPY ./pom.xml /app/pom.xml
-RUN mvn -f /app/pom.xml clean package
+COPY Borrowing/src/ /app/src/Borrowing/src
+COPY Borrowing/pom.xml /app/src/Borrowing
+RUN mvn -f /app/src/Borrowing/pom.xml clean package
 
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
