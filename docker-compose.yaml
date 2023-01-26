@@ -1,4 +1,7 @@
+version: "3.1"
+
 services:
+  
   #db customer
   customersdb:
     image: mariadb:latest
@@ -13,8 +16,9 @@ services:
       MARIADB_DATABASE: minervacustomers
     networks:
       - mincustomers
-    #customer
+  #customer
   customers:
+
     container_name: minerva-customers-micro
     image: matteo29mar/minervacustomers:1.4
     ports:
@@ -23,17 +27,6 @@ services:
       - mincustomers
     depends_on:
       - customersdb
-    #borrowing
-  borrowing:
-    container_name: minerva-borrowing-micro
-    image: elisacg/borrowing
-    ports:
-      - "8080:8080"
-    networks:
-      - minborrowing
-    depends_on:
-      - borrowingdb
-
   #borrowing db
   borrowingdb:
     image: mongo:latest
@@ -49,13 +42,24 @@ services:
       - mongodb_data:/data/db
     networks:
       - minborrowing
+  #borrowing
+  borrowing:
 
+    container_name: minerva-borrowing-micro
+    image: elisacg/borrowing
+    ports:
+      - "8080:8080"
+    networks:
+      - minborrowing
+    depends_on:
+      - borrowingdb
   #booksdb
   minerva-books-db:
     image: mariadb:latest
     container_name: minervabooks
     ports:
       - "3307:3306"
+
     restart: always
     environment:
       MARIADB_USER: uttsadmin
@@ -64,6 +68,19 @@ services:
       MARIADB_DATABASE: minerva-books-db
     networks:
       - minbooks
+  #books
+  books:
+
+    container_name: minerva-books-micro
+    image: matteo29mar/minervabooks:82
+    ports:
+        - "8080:8080"
+
+    networks:
+      - minbooks
+
+    depends_on:
+      - minerva-books-db
     #rabbitmq
   rabbitmq:
     image: rabbitmq:3-management
@@ -81,6 +98,7 @@ services:
 networks:
       mincustomers:
       minborrowing:
+      minbooks:
 
 volumes:
         mongodb_data: {}
